@@ -1,0 +1,79 @@
+name: GitHub Classroom Autograder - React 1a
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+
+env:
+  MAX_SCORE: 54
+  PASSING_SCORE: 43
+  COURSE_ID: '315' # (Required) canvas course id
+  ASSIGNMENT_ID: '18019' # (Required) canvas assignment id
+  
+jobs:
+  grade:
+    name: Grade Submission for ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display necessary software versions
+        run: |
+          echo "Node version: $(node --version)"
+          echo "Npm version: $(npm --version)"
+      - name: Checkout student code
+        uses: actions/checkout@v4
+        with:
+          path: student/
+      - name: Remove student test files
+        run: |
+          rm -rf student/src/__tests__/
+          rm -rf student/vite.config.js
+      - name: Checkout solution test files
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          repository: ${{ secrets.SOLUTION_REPO_NAME }}
+          path: solution/
+          sparse-checkout: |
+            ${{ secrets.SOLUTION_PROJECT_PATH }}/src/__tests__/
+            ${{ secrets.SOLUTION_PROJECT_PATH }}/vite.config.js
+          sparse-checkout-cone-mode: false
+      - name: Move solution tests files to student folder
+        run: |
+          cp -r solution/${{ secrets.SOLUTION_PROJECT_PATH }}/src/__tests__/ student/src/__tests__/
+          cp solution/${{ secrets.SOLUTION_PROJECT_PATH }}/vite.config.js student/vite.config.js
+      - name: Install dependencies in student folder
+        run: |
+          cd student/
+          npm install
+      - name: Run tests in student folder
+        # Vitest exits with error code 1 if any tests fail, but we want to continue
+        continue-on-error: true
+        run: |
+          cd student/
+          # In GitHub actions, CI defaults to true and vitest runs without watch
+          # Output file set in vite.config.js
+          npx vitest --silent 1> /dev/null 2> errors.txt
+      - name: Display failed tests
+        run: |
+          cd student/
+          cat errors.txt
+          cat output.json | jq '.failures'
+      - name: Send student's grade to SF
+        if: ${{ always() }}
+        run: |
+          cd student/
+          posted_score="$( cat output.json | jq '.stats.passes' )"
+          # $posted_score defaults to 0
+          echo "  SCORE: $posted_score  "
+          curl -X POST '${{ secrets.RESULTS_WEBHOOK }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "GithubUsername": "${{ github.ref_name }}",
+              "PostedGrade": "'${posted_score}'",
+              "MaxScore": "'${MAX_SCORE}'",
+              "PassingScore": "'${PASSING_SCORE}'",
+              "CourseId": "'${COURSE_ID}'",
+              "AssignmentId": "'${ASSIGNMENT_ID}'",
+              "GithubRepoUrlPath": "${{ github.repository }}"
+            }'
