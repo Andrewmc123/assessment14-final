@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'
 
 function Navigation() {
   return (
@@ -8,7 +8,7 @@ function Navigation() {
       <NavLink to="/photo">Photo</NavLink>
       <NavLink to="/toggle-photo-type">Set Photo Type</NavLink>
     </nav>
-  );
+  )
 }
 
-export default Navigation;
+export default Navigation

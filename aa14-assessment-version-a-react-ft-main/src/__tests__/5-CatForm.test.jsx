@@ -174,3 +174,21 @@ describe('(14 points) CatForm', () => {
   });
 })
 
+it('(1 point) should show an "Age must be between 0 and 30" error if age is less than 0', async () => {
+  render(
+    <MemoryRouter>
+      <CatForm />
+    </MemoryRouter>
+  );
+
+  const ageInput = screen.getByRole('spinbutton', { name: /age/i });
+  
+  // Clear and type in one operation
+  await user.clear(ageInput);
+  await user.type(ageInput, '-1');
+  
+  // Use findByTestId instead of findByText for more reliable finding
+  const ageError = await screen.findByTestId('age-error');
+  expect(ageError).toHaveTextContent('Age must be between 0 and 30');
+});
+

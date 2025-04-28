@@ -1,26 +1,20 @@
 [
   {
-    "id": "1",
+    "id": 1,
     "name": "Fluffy",
-    "color": "orange",
-    "age": 2
+    "age": 2,
+    "color": "orange"
   },
   {
-    "id": "2",
+    "id": 2,
     "name": "Queen",
-    "color": "yellow",
-    "age": 14
+    "age": 14,
+    "color": "yellow"
   },
   {
-    "id": "3",
-    "name": "Tiger",
-    "color": "brown",
-    "age": 3
-  },
-  {
-    "id": "4",
-    "name": "Jumper",
-    "color": "black",
-    "age": 5
+    "id": 3,
+    "name": "Whiskers",
+    "age": 1,
+    "color": "white"
   }
 ]

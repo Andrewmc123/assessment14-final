@@ -1,9 +1,8 @@
-// src/components/TogglePhotoType/TogglePhotoType.jsx
-import { useContext } from 'react';
-import { PhotoContext } from '../../context/PhotoContext';
+import { useContext } from 'react'
+import { PhotoContext } from '../context/PhotoContext'
 
 function TogglePhotoType() {
-  const { photoType, setPhotoType } = useContext(PhotoContext);
+  const { photoType, setPhotoType } = useContext(PhotoContext)
 
   return (
     <div>
@@ -11,7 +10,6 @@ function TogglePhotoType() {
       <label>
         <input
           type="radio"
-          value="cat"
           checked={photoType === 'cat'}
           onChange={() => setPhotoType('cat')}
         />
@@ -20,14 +18,13 @@ function TogglePhotoType() {
       <label>
         <input
           type="radio"
-          value="dog"
           checked={photoType === 'dog'}
           onChange={() => setPhotoType('dog')}
         />
         Dog
       </label>
     </div>
-  );
+  )
 }
 
-export default TogglePhotoType;
+export default TogglePhotoType
